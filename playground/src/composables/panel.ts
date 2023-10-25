@@ -61,7 +61,11 @@ watch(
 watch(
   titleHeightPercent,
   (value: number) => {
-    const spareSpace = (100 - collapsedPanels.value.size * value - panelSizes.value.reduce((uncollapsed, height, idx) => collapsedPanels.value.has(idx) ? uncollapsed : uncollapsed + height, 0)) / (panelSizes.value.length - collapsedPanels.value.size)
+    let spareSpace = (100 - collapsedPanels.value.size * value - panelSizes.value.reduce((uncollapsed, height, idx) => collapsedPanels.value.has(idx) ? uncollapsed : uncollapsed + height, 0))
+    if (collapsedPanels.value.size === panelSizes.value.length && spareSpace > 0)
+      collapsedPanels.value.delete(0)
+
+    spareSpace /= (panelSizes.value.length - collapsedPanels.value.size)
     panelSizes.value = panelSizes.value.map((height, idx) => (height <= value || collapsedPanels.value.has(idx)) ? value : height + spareSpace)
   },
 )
